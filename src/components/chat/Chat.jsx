@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./chat.css";
 import EmojiPicker from "emoji-picker-react";
 import {
@@ -7,8 +7,11 @@ import {
   getDoc,
   onSnapshot,
   updateDoc,
+  setDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
+
 import { useChatStore } from "../../lib/chatStore";
 import { useUserStore } from "../../lib/userStore";
 import upload from "../../lib/upload";
@@ -22,11 +25,12 @@ const Chat = () => {
     file: null,
     url: "",
   });
+  const [onlineStatus, setOnlineStatus] = useState(false); // Add state for online status
 
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore();
 
-  const endRef = useRef(null);
+  const endRef = React.createRef(null);
 
   useEffect(() => {
     if (chatId) {
@@ -55,11 +59,48 @@ const Chat = () => {
         setChat(updatedChat);
       });
 
+      // Fetch online status of the user
+      const userRef = doc(db, "users", user.id);
+      const statusUnsub = onSnapshot(userRef, (doc) => {
+        if (doc.exists()) {
+          const userData = doc.data();
+          setOnlineStatus(userData.online || false);
+        } else {
+          setOnlineStatus(false); // Set onlineStatus to false if user doc doesn't exist
+        }
+      });
+
       return () => {
         unSub();
+        statusUnsub(); // Cleanup on unmount
       };
     }
-  }, [chatId]);
+  }, [chatId, user.id, currentUser.id]);
+
+  useEffect(() => {
+    const handleOnlineStatus = async () => {
+      const userRef = doc(db, "users", currentUser.id);
+
+      await setDoc(userRef, { online: true }, { merge: true });
+
+      // Set offline status on window unload
+      window.addEventListener("beforeunload", async () => {
+        await setDoc(userRef, { online: false, lastSeen: serverTimestamp() }, { merge: true });
+      });
+
+      // Set offline status on disconnect
+      window.addEventListener("offline", async () => {
+        await setDoc(userRef, { online: false, lastSeen: serverTimestamp() }, { merge: true });
+      });
+    };
+
+    handleOnlineStatus();
+
+    return () => {
+      window.removeEventListener("beforeunload", handleOnlineStatus);
+      window.removeEventListener("offline", handleOnlineStatus);
+    };
+  }, [currentUser.id]);
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
@@ -118,7 +159,7 @@ const Chat = () => {
           });
         }
       });
-    } catch (err) {
+    }catch (err) {
       console.log(err);
     } finally {
       setImg({
@@ -136,13 +177,11 @@ const Chat = () => {
         <span
           className="tick-marks"
           style={{
-  color: message.isRead ? "#34B7F1" : "#A8AABA", // WhatsApp blue for read
-  fontSize: "1.2em",
-  fontWeight: "bold",
-  marginLeft: "5px"
-}}
-
-
+            color: message.isRead ? "#34B7F1" : "#A8AABA", // WhatsApp blue for read
+            fontSize: "1.2em",
+            fontWeight: "bold",
+            marginLeft: "5px"
+          }}
         >
           {message.isRead ? "✓✓" : "✓"}
         </span>
@@ -158,7 +197,7 @@ const Chat = () => {
           <img src={user?.avatar || "./avatar.png"} alt="" />
           <div className="texts">
             <span>{user?.username}</span>
-            <p>Lorem ipsum dolor, sit amet.</p>
+            <p>{onlineStatus ? "Online" : "Offline"}</p> {/* Display online status */}
           </div>
         </div>
         <div className="icons">

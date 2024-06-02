@@ -1,17 +1,18 @@
 /* Overall Chat Container */
 .chat {
-  flex: 2;
+  flex: ;
   background-color: #e9ede8; 
   border-left: none; 
   border-right: none;
   height: 100%;
+  width:50%;
   display: flex;
   flex-direction: column;
 }
 
 /* Chat Header (Top) */
 .chat .top {
-  background-color: #f0f2f5; 
+  background-color: #00a884;
   padding: 15px; 
   display: flex;
   align-items: center;
@@ -35,10 +36,11 @@
 .chat .top .user .texts span {
   font-size: 16px; 
 }
-.chat .top .user .texts p { 
+.chat .top .user .texts p {
   font-size: 12px;
-  color: #8795a1;
+  color: #d9dfdb; /* WhatsApp online green color */
 }
+
 
 /* Icons in Header (Call, Video, etc.) */
 .chat .top .icons {
@@ -53,12 +55,13 @@
 
 /* Chat Messages Area (Center) */
 .chat .center {
-  padding: 10px; 
-  flex: 1;
+  padding: 10px;
+  flex: 1; /* Allow the center to expand and fill available space */
   overflow: scroll;
   display: flex;
   flex-direction: column;
-  gap: 10px; 
+  gap: 10px;
+  background-color: #ece5dd; /* WhatsApp background color */ 
 }
 
 /* Message Bubbles */

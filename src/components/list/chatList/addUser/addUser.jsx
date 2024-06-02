@@ -27,9 +27,7 @@ const AddUser = () => {
 
     try {
       const userRef = collection(db, "users");
-
       const q = query(userRef, where("username", "==", username));
-
       const querySnapShot = await getDocs(q);
 
       if (!querySnapShot.empty) {
@@ -46,29 +44,26 @@ const AddUser = () => {
 
     try {
       const newChatRef = doc(chatRef);
-
       await setDoc(newChatRef, {
         createdAt: serverTimestamp(),
         messages: [],
       });
 
-      await updateDoc(doc(userChatsRef, user.id), {
-        chats: arrayUnion({
-          chatId: newChatRef.id,
-          lastMessage: "",
-          receiverId: currentUser.id,
-          updatedAt: Date.now(),
-        }),
-      });
+      const userChatRef = doc(userChatsRef, user.id);
+      const currentUserChatRef = doc(userChatsRef, currentUser.id);
 
-      await updateDoc(doc(userChatsRef, currentUser.id), {
-        chats: arrayUnion({
-          chatId: newChatRef.id,
-          lastMessage: "",
-          receiverId: user.id,
-          updatedAt: Date.now(),
-        }),
-      });
+      const chatData = {
+        chatId: newChatRef.id,
+        lastMessage: "",
+        receiverId: currentUser.id,
+        updatedAt: Date.now(),
+      };
+
+      await setDoc(userChatRef, { chats: arrayUnion(chatData) }, { merge: true });
+      
+      chatData.receiverId = user.id;
+      await setDoc(currentUserChatRef, { chats: arrayUnion(chatData) }, { merge: true });
+      
     } catch (err) {
       console.log(err);
     }
