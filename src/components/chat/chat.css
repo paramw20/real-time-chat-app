@@ -1,171 +1,126 @@
+/* Overall Chat Container */
 .chat {
   flex: 2;
-  border-left: 1px solid #dddddd35;
-  border-right: 1px solid #dddddd35;
+  background-color: #e9ede8; 
+  border-left: none; 
+  border-right: none;
   height: 100%;
   display: flex;
   flex-direction: column;
+}
 
-  .top {
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #dddddd35;
+/* Chat Header (Top) */
+.chat .top {
+  background-color: #f0f2f5; 
+  padding: 15px; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distribute space between user info and icons */
+  border-bottom: 1px solid #d1d7dc;
+}
 
-    .user {
-      display: flex;
-      align-items: center;
-      gap: 20px;
+/* User Information in Header */
+.chat .top .user {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.chat .top .user img {
+  width: 40px;           /* Make width and height the same for a perfect circle */
+  height: 40px;          
+  object-fit: cover;     /* Ensure the image covers the entire area without stretching */
+  border-radius: 50%;   /* The key property to create a circle */
+}
 
-      img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
+.chat .top .user .texts span {
+  font-size: 16px; 
+}
+.chat .top .user .texts p { 
+  font-size: 12px;
+  color: #8795a1;
+}
 
-      .texts {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+/* Icons in Header (Call, Video, etc.) */
+.chat .top .icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.chat .top .icons img {
+  width: 24px; 
+  height: 24px;
+}
 
-        span {
-          font-size: 18px;
-          font-weight: bold;
-        }
+/* Chat Messages Area (Center) */
+.chat .center {
+  padding: 10px; 
+  flex: 1;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+}
 
-        p {
-          font-size: 14px;
-          font-weight: 300;
-          color: #a5a5a5;
-        }
-      }
-    }
+/* Message Bubbles */
+.chat .center .message {
+  max-width: 80%;
+  display: flex;
+  align-items: flex-end;
+}
+.chat .center .message.own {
+  align-self: flex-end;
+}
+.chat .center .message .texts p {
+  padding: 10px;
+  background-color: #ffffff; /* Changed to white for received messages */
+  border-radius: 2px 18px 18px 18px; 
+  color: #111b21; 
+}
+.chat .center .message.own .texts p {
+  background-color: #dcf8c6; /* Changed to WhatsApp's own message color for sent messages */
+  border-radius: 18px 18px 2px 18px;
+  color: #111b21;
+}
 
-    .icons {
-      display: flex;
-      gap: 20px;
+/* Message Timestamps */
+.chat .center .message .texts span {
+  font-size: 12px;
+  color: #8795a1; 
+  margin-left: 10px; 
+}
 
-      img {
-        width: 20px;
-        height: 20px;
-      }
-    }
-  }
+/* Message Input Area (Bottom) */
+.chat .bottom {
+  background-color: #f0f2f5;
+  padding: 10px;
+  border-top: 1px solid #d1d7dc;
+  display: flex; 
+  align-items: center; 
+}
+.chat .bottom input {
+  flex: 1;
+  background-color: #ffffff;
+  border: 1px solid #d1d7dc;
+  padding: 12px;
+  border-radius: 20px;
+  color: #111b21;
+}
 
-  .center {
-    padding: 20px;
-    flex: 1;
-    overflow: scroll;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-
-    .message {
-      max-width: 70%;
-      display: flex;
-      gap: 20px;
-
-      &.own {
-        align-self: flex-end;
-
-        .texts {
-          p {
-            background-color: #5183fe;
-          }
-        }
-      }
-
-      img {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-      .texts {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-
-        img {
-          width: 100%;
-          height: 300px;
-          border-radius: 10px;
-          object-fit: cover;
-        }
-
-        p {
-          padding: 20px;
-          background-color: rgba(17, 25, 40, 0.3);
-          border-radius: 10px;
-        }
-
-        span {
-          font-size: 13px;
-        }
-      }
-    }
-  }
-
-  .bottom {
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid #dddddd35;
-    gap: 20px;
-    margin-top: auto;
-
-    .icons {
-      display: flex;
-      gap: 20px;
-    }
-
-    img {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-
-    input {
-      flex: 1;
-      background-color: rgba(17, 25, 40, 0.5);
-      border: none;
-      outline: none;
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      font-size: 16px;
-
-      &:disabled {
-        cursor: not-allowed;
-      }
-    }
-
-    .emoji {
-      position: relative;
-
-      .picker {
-        position: absolute;
-        bottom: 50px;
-        left: 0;
-      }
-    }
-
-    .sendButton {
-      background-color: #5183fe;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-
-      &:disabled {
-        background-color: #5182feb4;
-        cursor: not-allowed;
-      }
-    }
-  }
+.chat .bottom .icons { /* Container for the icons */
+  display: flex;
+  margin-left: 10px;
+}
+.chat .bottom img { 
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  margin-right: 5px; 
+}
+.chat .bottom .sendButton { 
+  background-color: #00a884; 
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 20px;
+  margin-left: 10px; 
 }

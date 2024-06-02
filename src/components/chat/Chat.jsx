@@ -15,7 +15,7 @@ import upload from "../../lib/upload";
 import { format } from "timeago.js";
 
 const Chat = () => {
-  const [chat, setChat] = useState(null); // Initialize as null
+  const [chat, setChat] = useState(null);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [img, setImg] = useState({
@@ -29,15 +29,30 @@ const Chat = () => {
   const endRef = useRef(null);
 
   useEffect(() => {
-    if (chat?.messages) {
-      endRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [chat?.messages]);
-
-  useEffect(() => {
     if (chatId) {
-      const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
-        setChat(res.data());
+      const unSub = onSnapshot(doc(db, "chats", chatId), async (res) => {
+        const updatedChat = res.data();
+        if (updatedChat && updatedChat.messages) {
+          const userChatsRef = doc(db, "userchats", user.id);
+          const userChatsSnapshot = await getDoc(userChatsRef);
+          const userChatsData = userChatsSnapshot.data();
+          
+          updatedChat.messages.forEach(message => {
+            if (message.senderId !== currentUser.id) {
+              message.isRead = true;
+            }
+          });
+          
+          // Update chat data in Firestore
+          await updateDoc(userChatsRef, {
+            chats: userChatsData.chats.map((c) =>
+              c.chatId === chatId ? { ...c, isSeen: true } : c
+            ),
+          });
+
+          await updateDoc(doc(db, "chats", chatId), updatedChat);
+        }
+        setChat(updatedChat);
       });
 
       return () => {
@@ -75,6 +90,7 @@ const Chat = () => {
           senderId: currentUser.id,
           text,
           createdAt: new Date(),
+          isRead: false,
           ...(imgUrl && { img: imgUrl }),
         }),
       });
@@ -114,6 +130,27 @@ const Chat = () => {
     }
   };
 
+  const renderTickMarks = (message) => {
+    if (message.senderId === currentUser.id) {
+      return (
+        <span
+          className="tick-marks"
+          style={{
+  color: message.isRead ? "#34B7F1" : "#A8AABA", // WhatsApp blue for read
+  fontSize: "1.2em",
+  fontWeight: "bold",
+  marginLeft: "5px"
+}}
+
+
+        >
+          {message.isRead ? "✓✓" : "✓"}
+        </span>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="chat">
       <div className="top">
@@ -137,12 +174,13 @@ const Chat = () => {
               className={
                 message.senderId === currentUser?.id ? "message own" : "message"
               }
-              key={message?.createdAt?.seconds} // Ensure unique key
+              key={message?.createdAt?.seconds}
             >
               <div className="texts">
                 {message.img && <img src={message.img} alt="" />}
                 <p>{message.text}</p>
                 <span>{format(message.createdAt.toDate())}</span>
+                {renderTickMarks(message)}
               </div>
             </div>
           ))

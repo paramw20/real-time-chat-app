@@ -2,32 +2,37 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* WhatsApp Font */
 }
 
 body {
-  background-image: url("/bg.jpg");
+  background-color: #e9ede8; /* WhatsApp light background */
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  color: white;
+  color: #111b21; /* WhatsApp dark text color */
+  background-image: url('/public/Whatsapp\ theme.jpg');
 }
 
 .container {
-  width: 80vw;
+  width: 85vw; /* Slightly wider */
   height: 90vh;
-  background-color: rgba(17, 25, 40, 0.75);
-  backdrop-filter: blur(19px) saturate(180%);
+  background-color: #ffffff; /* White background */
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.125);
+  border: none; /* Remove border */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   display: flex;
+  
 }
 
-.loading{
+.loading { /* Loading screen (optional) */
   padding: 50px;
-  font-size: 36px;
+  font-size: 24px; /* Smaller font */
   border-radius: 10px;
-  background-color: rgba(17, 25, 40, 0.9);
+  background-color: #f0f2f5; /* WhatsApp light gray */
+  color: #111b21; /* Dark text */
+  text-align: center;
+  width: fit-content; /* Make the box adapt to content width */
+  margin: auto; /* Center the box */
 }

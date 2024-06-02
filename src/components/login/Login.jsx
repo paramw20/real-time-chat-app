@@ -5,16 +5,17 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { auth, db } from "../../lib/firebase";
+import { auth, db, database } from "../../lib/firebase"; // Assuming you've exported the database instance from firebase.js
 import { 
   doc, 
   setDoc,
-  collection, // Import Firestore collection
-  query,       // Import Firestore query
-  where,       // Import Firestore where
-  getDocs,     // Import Firestore getDocs
+  collection,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 import upload from "../../lib/upload";
+import { ref, set } from "firebase/database"; // Adding import for ref and set from the database module
 
 const Login = () => {
   const [avatar, setAvatar] = useState({
@@ -58,6 +59,7 @@ const Login = () => {
 
       const imgUrl = await upload(avatar.file);
 
+      // Store user data in Firestore
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
@@ -66,8 +68,11 @@ const Login = () => {
         blocked: [],
       });
 
-      await setDoc(doc(db, "userchats", res.user.uid), {
-        chats: [],
+      // Store user data in Realtime Database
+      const userRef = ref(database, `users/${res.user.uid}`);
+      await set(userRef, {
+        email: res.user.email,
+        // Add more data you want to store if needed
       });
 
       toast.success("Account created! You can login now!");
@@ -87,7 +92,16 @@ const Login = () => {
     const { email, password } = Object.fromEntries(formData);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Store user data in Realtime Database
+      const userRef = ref(database, `users/${user.uid}`);
+      await set(userRef, {
+        email: user.email,
+        // Add more data you want to store if needed
+      });
+
     } catch (err) {
       console.log(err);
       toast.error(err.message);

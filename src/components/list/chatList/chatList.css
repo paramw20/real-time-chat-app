@@ -1,73 +1,89 @@
 .chatList {
   flex: 1;
   overflow: scroll;
-  .search {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 20px;
+  background-color: #ffffff; /* White background */
+}
 
-    .searchBar {
-      flex: 1;
-      background-color: rgba(17, 25, 40, 0.5);
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      border-radius: 10px;
-      padding: 10px;
+.chatList .search {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Reduced gap */
+  padding: 10px;  /* Reduced padding */
+  border-bottom: 1px solid #f4f4f4; /* Light separator */
+}
 
-      input {
-        background-color: transparent;
-        border: none;
-        outline: none;
-        color: white;
-        flex: 1;
-      }
+.chatList .search .searchBar {
+  flex: 1;
+  background-color: #f0f2f5; /* WhatsApp input background */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 20px; /* Rounded corners */
+  padding: 8px; /* Reduced padding */
+}
 
-      img {
-        width: 20px;
-        height: 20px;
-      }
-    }
+.chatList .search .searchBar input {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: #111b21; /* Dark text */
+  flex: 1;
+}
 
-    .add {
-      width: 36px;
-      height: 36px;
-      background-color: rgba(17, 25, 40, 0.5);
-      padding: 10px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-  }
+.chatList .search .searchBar img {
+  width: 18px; /* Slightly smaller icon */
+  height: 18px;
+}
 
-  .item {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 20px;
-    cursor: pointer;
-    border-bottom: 1px solid #dddddd35;
+.chatList .search .add {
+  width: 36px;
+  height: 36px;
+  background-color: #e9e9e9; /* Light gray background */
+  padding: 10px;
+  border-radius: 50%; /* Circle button */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the plus icon */
+}
 
-    img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
+.chatList .item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f4f4f4; /* Light separator */
+}
 
-    .texts {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+.chatList .item:hover {
+  background-color: #f5f5f5; /* Hover effect */
+}
 
-      span {
-        font-weight: 500;
-      }
+.chatList .item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
-      p {
-        font-size: 14px;
-        font-weight: 300;
-      }
-    }
-  }
+.chatList .item .texts {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.chatList .item .texts span {
+  font-weight: 500;
+  color: #111b21; /* Dark text */
+}
+
+.chatList .item .texts p {
+  font-size: 14px;
+  font-weight: 400;
+  color: #8795a1; /* Gray for last message */
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Show ellipsis for long text */
+  max-width: 200px; /* Limit the width of the last message */
 }
